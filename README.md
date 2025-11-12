@@ -36,6 +36,8 @@ docker run --rm -v "$(pwd):/app" -w /app sbtscala/scala-sbt:eclipse-temurin-21.0
 <summary>Vezi output exemplu</summary>
 
 ```
+VARIANTA: DOAR LIVING
+
 ╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                                  ║
 ║                    CALCULATOR SARCINĂ TERMICĂ DE RĂCIRE                                          ║
@@ -78,6 +80,10 @@ Câștiguri termice prin pereți externi
 Formula: Q = Σ(U × A × ΔT)
 ----------------------------------------------------------------------------------------------------
   Perete SV: 39.26 W
+    dimensiuni               : 3.3 m × 3.3 m
+    A (suprafață)            : 10.889999999999999 m²
+    U (coef. transm.)        : 0.35 W/(m²·K)
+    ΔT (dif. temp.)          : 10.299999999999997°C
 
 TOTAL Câștiguri termice prin pereți externi: 39.26 W
 ----------------------------------------------------------------------------------------------------
@@ -85,8 +91,46 @@ Câștiguri termice prin ferestre
 Formula: Q = Q_transmisie + Q_radiatie(ora 15:00) = Σ(U × A × ΔT) + Σ(A × I × g × F_umbra)
 ----------------------------------------------------------------------------------------------------
   Fereastră SE: 671.88 W
+    dimensiuni               : 4.64 m × 3.3 m
+    A (suprafață)            : 15.311999999999998 m²
+    U (coef. transm.)        : 1.0 W/(m²·K)
+    g (factor solar)         : 0.39
+    F_umbra (factor umbră)   : 0.7
+    ora critică              : 15:00
+    I (radiație totală)      : 123.0 W/m²
+    I_D (radiație directă)   : 0.0 W/m²
+    I_d (radiație difuză)    : 123.0 W/m²
+    ΔT (dif. temp.)          : 10.299999999999997°C
+    Q_trans (transmisie)     : 157.71359999999993 W
+    Q_rad (radiație)         : 514.1616479999999 W
+
   Fereastră SV: 896.50 W
+    dimensiuni               : 1.05 m × 3.3 m
+    A (suprafață)            : 3.465 m²
+    U (coef. transm.)        : 1.0 W/(m²·K)
+    g (factor solar)         : 0.39
+    F_umbra (factor umbră)   : 1.0
+    ora critică              : 15:00
+    I (radiație totală)      : 637.0 W/m²
+    I_D (radiație directă)   : 514.0 W/m²
+    I_d (radiație difuză)    : 123.0 W/m²
+    ΔT (dif. temp.)          : 10.299999999999997°C
+    Q_trans (transmisie)     : 35.68949999999999 W
+    Q_rad (radiație)         : 860.80995 W
+
   Fereastră SV: 2732.19 W
+    dimensiuni               : 3.2 m × 3.3 m
+    A (suprafață)            : 10.56 m²
+    U (coef. transm.)        : 1.0 W/(m²·K)
+    g (factor solar)         : 0.39
+    F_umbra (factor umbră)   : 1.0
+    ora critică              : 15:00
+    I (radiație totală)      : 637.0 W/m²
+    I_D (radiație directă)   : 514.0 W/m²
+    I_d (radiație difuză)    : 123.0 W/m²
+    ΔT (dif. temp.)          : 10.299999999999997°C
+    Q_trans (transmisie)     : 108.76799999999997 W
+    Q_rad (radiație)         : 2623.4208000000003 W
 
 TOTAL Câștiguri termice prin ferestre: 4300.56 W
 ----------------------------------------------------------------------------------------------------
@@ -94,6 +138,11 @@ Câștiguri termice prin plafon
 Formula: Q = U × A × ΔT_echivalent
 ----------------------------------------------------------------------------------------------------
   Plafon expus: 1867.62 W
+    A (suprafață)            : 33.5 m²
+    U (coef. transm.)        : 2.5 W/(m²·K)
+    ΔT_bază (dif. temp.)     : 10.299999999999997°C
+    ΔT_rad (radiație sol.)   : 12.0°C
+    ΔT_ef (efectiv)          : 22.299999999999997°C
 
 TOTAL Câștiguri termice prin plafon: 1867.62 W
 ----------------------------------------------------------------------------------------------------
@@ -101,6 +150,9 @@ Câștiguri termice de la persoane
 Formula: Q = n_adulti × q_adult + n_copii × q_copil
 ----------------------------------------------------------------------------------------------------
   Adulți: 250.00 W
+    n (număr persoane)       : 2
+    Q_sens (căldură sens.)   : 150.0 W
+    Q_lat (căldură lat.)     : 100.0 W
 
 TOTAL Câștiguri termice de la persoane: 250.00 W
 ----------------------------------------------------------------------------------------------------
@@ -108,6 +160,8 @@ Câștiguri termice de la echipamente electrocasnice
 Formula: Q = P_electrocasnice × f_utilizare
 ----------------------------------------------------------------------------------------------------
   Echipamente electrocasnice: 0.00 W
+    P (putere instalată)     : 0.0 W
+    f (factor utilizare)     : 0.0
 
 TOTAL Câștiguri termice de la echipamente electrocasnice: 0.00 W
 ----------------------------------------------------------------------------------------------------
@@ -115,6 +169,12 @@ Câștiguri termice prin ventilație/infiltrații
 Formula: Q = ṁ × c_p × ΔT = (ρ × V × n / 3600) × c_p × ΔT
 ----------------------------------------------------------------------------------------------------
   Ventilație/infiltrații: 114.44 W
+    V (volum)                : 110.55 m³
+    n (schimburi aer)        : 0.3 h⁻¹
+    ρ (densitate aer)        : 1.2 kg/m³
+    c_p (căldură spec.)      : 1005.0 J/(kg·K)
+    ṁ (debit masic)          : 0.01106 kg/s
+    ΔT                       : 10.299999999999997°C
 
 TOTAL Câștiguri termice prin ventilație/infiltrații: 114.44 W
 ====================================================================================================
@@ -306,7 +366,16 @@ Câștiguri termice prin pereți externi
 Formula: Q = Σ(U × A × ΔT)
 ----------------------------------------------------------------------------------------------------
   Perete SV: 39.26 W
+    dimensiuni               : 3.3 m × 3.3 m
+    A (suprafață)            : 10.889999999999999 m²
+    U (coef. transm.)        : 0.35 W/(m²·K)
+    ΔT (dif. temp.)          : 10.299999999999997°C
+
   Perete SV: 8.33 W
+    dimensiuni               : 0.7 m × 3.3 m
+    A (suprafață)            : 2.3099999999999996 m²
+    U (coef. transm.)        : 0.35 W/(m²·K)
+    ΔT (dif. temp.)          : 10.299999999999997°C
 
 TOTAL Câștiguri termice prin pereți externi: 47.59 W
 ----------------------------------------------------------------------------------------------------
@@ -314,9 +383,60 @@ Câștiguri termice prin ferestre
 Formula: Q = Q_transmisie + Q_radiatie(ora 15:00) = Σ(U × A × ΔT) + Σ(A × I × g × F_umbra)
 ----------------------------------------------------------------------------------------------------
   Fereastră SE: 671.88 W
+    dimensiuni               : 4.64 m × 3.3 m
+    A (suprafață)            : 15.311999999999998 m²
+    U (coef. transm.)        : 1.0 W/(m²·K)
+    g (factor solar)         : 0.39
+    F_umbra (factor umbră)   : 0.7
+    ora critică              : 15:00
+    I (radiație totală)      : 123.0 W/m²
+    I_D (radiație directă)   : 0.0 W/m²
+    I_d (radiație difuză)    : 123.0 W/m²
+    ΔT (dif. temp.)          : 10.299999999999997°C
+    Q_trans (transmisie)     : 157.71359999999993 W
+    Q_rad (radiație)         : 514.1616479999999 W
+
   Fereastră SV: 896.50 W
+    dimensiuni               : 1.05 m × 3.3 m
+    A (suprafață)            : 3.465 m²
+    U (coef. transm.)        : 1.0 W/(m²·K)
+    g (factor solar)         : 0.39
+    F_umbra (factor umbră)   : 1.0
+    ora critică              : 15:00
+    I (radiație totală)      : 637.0 W/m²
+    I_D (radiație directă)   : 514.0 W/m²
+    I_d (radiație difuză)    : 123.0 W/m²
+    ΔT (dif. temp.)          : 10.299999999999997°C
+    Q_trans (transmisie)     : 35.68949999999999 W
+    Q_rad (radiație)         : 860.80995 W
+
   Fereastră SV: 2732.19 W
+    dimensiuni               : 3.2 m × 3.3 m
+    A (suprafață)            : 10.56 m²
+    U (coef. transm.)        : 1.0 W/(m²·K)
+    g (factor solar)         : 0.39
+    F_umbra (factor umbră)   : 1.0
+    ora critică              : 15:00
+    I (radiație totală)      : 637.0 W/m²
+    I_D (radiație directă)   : 514.0 W/m²
+    I_d (radiație difuză)    : 123.0 W/m²
+    ΔT (dif. temp.)          : 10.299999999999997°C
+    Q_trans (transmisie)     : 108.76799999999997 W
+    Q_rad (radiație)         : 2623.4208000000003 W
+
   Fereastră SV: 1707.62 W
+    dimensiuni               : 2.0 m × 3.3 m
+    A (suprafață)            : 6.6 m²
+    U (coef. transm.)        : 1.0 W/(m²·K)
+    g (factor solar)         : 0.39
+    F_umbra (factor umbră)   : 1.0
+    ora critică              : 15:00
+    I (radiație totală)      : 637.0 W/m²
+    I_D (radiație directă)   : 514.0 W/m²
+    I_d (radiație difuză)    : 123.0 W/m²
+    ΔT (dif. temp.)          : 10.299999999999997°C
+    Q_trans (transmisie)     : 67.97999999999998 W
+    Q_rad (radiație)         : 1639.638 W
 
 TOTAL Câștiguri termice prin ferestre: 6008.18 W
 ----------------------------------------------------------------------------------------------------
@@ -324,6 +444,11 @@ Câștiguri termice prin plafon
 Formula: Q = U × A × ΔT_echivalent
 ----------------------------------------------------------------------------------------------------
   Plafon expus: 3796.57 W
+    A (suprafață)            : 68.1 m²
+    U (coef. transm.)        : 2.5 W/(m²·K)
+    ΔT_bază (dif. temp.)     : 10.299999999999997°C
+    ΔT_rad (radiație sol.)   : 12.0°C
+    ΔT_ef (efectiv)          : 22.299999999999997°C
 
 TOTAL Câștiguri termice prin plafon: 3796.57 W
 ----------------------------------------------------------------------------------------------------
@@ -331,6 +456,9 @@ Câștiguri termice de la persoane
 Formula: Q = n_adulti × q_adult + n_copii × q_copil
 ----------------------------------------------------------------------------------------------------
   Adulți: 250.00 W
+    n (număr persoane)       : 2
+    Q_sens (căldură sens.)   : 150.0 W
+    Q_lat (căldură lat.)     : 100.0 W
 
 TOTAL Câștiguri termice de la persoane: 250.00 W
 ----------------------------------------------------------------------------------------------------
@@ -338,6 +466,8 @@ Câștiguri termice de la echipamente electrocasnice
 Formula: Q = P_electrocasnice × f_utilizare
 ----------------------------------------------------------------------------------------------------
   Echipamente electrocasnice: 150.00 W
+    P (putere instalată)     : 150.0 W
+    f (factor utilizare)     : 1.0
 
 TOTAL Câștiguri termice de la echipamente electrocasnice: 150.00 W
 ----------------------------------------------------------------------------------------------------
@@ -345,6 +475,12 @@ Câștiguri termice prin ventilație/infiltrații
 Formula: Q = ṁ × c_p × ΔT = (ρ × V × n / 3600) × c_p × ΔT
 ----------------------------------------------------------------------------------------------------
   Ventilație/infiltrații: 215.01 W
+    V (volum)                : 207.70499999999998 m³
+    n (schimburi aer)        : 0.3 h⁻¹
+    ρ (densitate aer)        : 1.2 kg/m³
+    c_p (căldură spec.)      : 1005.0 J/(kg·K)
+    ṁ (debit masic)          : 0.02077 kg/s
+    ΔT                       : 10.299999999999997°C
 
 TOTAL Câștiguri termice prin ventilație/infiltrații: 215.01 W
 ====================================================================================================
@@ -389,7 +525,7 @@ UNITĂȚI INTERNE INSTALATE:
   • Hisense ADT26UX4RBL4 (Dormitor 2)            :   2.9 kW
   • Hisense ADT26UX4RBL4 (Birou)                 :   2.9 kW
   ------------------------------------------------------------
-  TOTAL CAPACITATE UNITĂȚI INTERNE:                 16.5 kW
+  TOTAL CAPACITATE UNITĂȚI INTERNE               :  16.5 kW
 
 UNITATE EXTERNĂ:
   • Hisense 5AMW125U4RTA (42K)                   :  12.5 kW (nominal la 35°C / 27°C interior)
@@ -399,11 +535,6 @@ NOTĂ IMPORTANTĂ:
   • Unitatea montată pe bloc, în soare, are temperatura aerului aspirat cu ~4°C mai mare
     decât temperatura la umbră (datorită radiației solare și reflexiei de la suprafețe)
   • Factor de corecție capacitate (țevi, înălțime): 1.00
-
-
-====================================================================================================
-ANALIZA CAPACITATE - SET POINT INTERIOR: 22.0°C
-====================================================================================================
 
 CAPACITATE NECESARĂ:
   • Capacitate totală unități interne: 16.50 kW
@@ -415,7 +546,38 @@ LEGENDĂ:
   • Deficit 100%: Deficit față de necesarul cu simultaneitate 100% (⚠ = problematic când > 25%)
   • Temp. aer aspirat = Temp. la umbră + 4°C (efect soare)
   • Capacitate reală = Capacitate din tabel × 1.00 (factor corecție țevi)
+
+
+====================================================================================================
+ANALIZA CAPACITATE - SET POINT INTERIOR: 27.0°C
+====================================================================================================
+
+ Temp. la  │  Temp. aer   │  Capacitate  │    Deficit     │    Deficit
+  umbră    │   aspirat    │    reală     │ simultaneitate │ simultaneitate
+   (°C)    │     (°C)     │     (kW)     │      75%       │      100%
+-----------+--------------+--------------+----------------+---------------
+      31   │     35.0     │    12.50     │      -1.0%     │      24.2%
+      32   │     36.0     │    12.25     │  ⚠    1.0%     │  ⚠   25.8%
+      33   │     37.0     │    12.00     │  ⚠    3.0%     │  ⚠   27.3%
+      34   │     38.0     │    11.75     │  ⚠    5.1%     │  ⚠   28.8%
+      35   │     39.0     │    11.50     │  ⚠    7.1%     │  ⚠   30.3%
+      36   │     40.0     │    11.25     │  ⚠    9.1%     │  ⚠   31.8%
+      37   │     41.0     │    10.83     │  ⚠   12.5%     │  ⚠   34.4%
+      38   │     42.0     │    10.40     │  ⚠   16.0%     │  ⚠   37.0%
+      39   │     43.0     │     9.98     │  ⚠   19.4%     │  ⚠   39.5%
+      40   │     44.0     │     9.55     │  ⚠   22.8%     │  ⚠   42.1%
+      41   │     45.0     │     9.13     │  ⚠   26.3%     │  ⚠   44.7%
+      42   │     46.0     │     9.00     │  ⚠   27.3%     │  ⚠   45.5%
+      43   │     47.0     │     8.88     │  ⚠   28.3%     │  ⚠   46.2%
+      44   │     48.0     │     8.75     │  ⚠   29.3%     │  ⚠   47.0%
+      45   │     49.0     │     8.75     │  ⚠   29.3%     │  ⚠   47.0%
 ----------------------------------------------------------------------------------------------------
+
+
+====================================================================================================
+ANALIZA CAPACITATE - SET POINT INTERIOR: 22.0°C
+====================================================================================================
+
  Temp. la  │  Temp. aer   │  Capacitate  │    Deficit     │    Deficit
   umbră    │   aspirat    │    reală     │ simultaneitate │ simultaneitate
    (°C)    │     (°C)     │     (kW)     │      75%       │      100%
@@ -437,42 +599,16 @@ LEGENDĂ:
       45   │     49.0     │     8.00     │  ⚠   35.4%     │  ⚠   51.5%
 ----------------------------------------------------------------------------------------------------
 
-
 ====================================================================================================
-ANALIZA CAPACITATE - SET POINT INTERIOR: 27.0°C
+CONCLUZII - SIMULTANEITATE 75%
 ====================================================================================================
 
-CAPACITATE NECESARĂ:
-  • Capacitate totală unități interne: 16.50 kW
-  • Necesar cu simultaneitate 75%: 12.38 kW
-  • Necesar cu simultaneitate 100%: 16.50 kW
+Prima apariție a deficitului de capacitate (simultaneitate 75%):
+  • Set point 27.0°C: La 32°C la umbră (36.0°C aer aspirat), deficit de 1.0%
+  • Set point 22.0°C: La 31°C la umbră (35.0°C aer aspirat), deficit de 9.1%
 
-LEGENDĂ:
-  • Deficit 75%: Deficit față de necesarul cu simultaneitate 75% (⚠ = problematic)
-  • Deficit 100%: Deficit față de necesarul cu simultaneitate 100% (⚠ = problematic când > 25%)
-  • Temp. aer aspirat = Temp. la umbră + 4°C (efect soare)
-  • Capacitate reală = Capacitate din tabel × 1.00 (factor corecție țevi)
-----------------------------------------------------------------------------------------------------
- Temp. la  │  Temp. aer   │  Capacitate  │    Deficit     │    Deficit
-  umbră    │   aspirat    │    reală     │ simultaneitate │ simultaneitate
-   (°C)    │     (°C)     │     (kW)     │      75%       │      100%
------------+--------------+--------------+----------------+---------------
-      31   │     35.0     │    12.50     │      -1.0%     │      24.2%
-      32   │     36.0     │    12.25     │  ⚠    1.0%     │  ⚠   25.8%
-      33   │     37.0     │    12.00     │  ⚠    3.0%     │  ⚠   27.3%
-      34   │     38.0     │    11.75     │  ⚠    5.1%     │  ⚠   28.8%
-      35   │     39.0     │    11.50     │  ⚠    7.1%     │  ⚠   30.3%
-      36   │     40.0     │    11.25     │  ⚠    9.1%     │  ⚠   31.8%
-      37   │     41.0     │    10.83     │  ⚠   12.5%     │  ⚠   34.4%
-      38   │     42.0     │    10.40     │  ⚠   16.0%     │  ⚠   37.0%
-      39   │     43.0     │     9.98     │  ⚠   19.4%     │  ⚠   39.5%
-      40   │     44.0     │     9.55     │  ⚠   22.8%     │  ⚠   42.1%
-      41   │     45.0     │     9.13     │  ⚠   26.3%     │  ⚠   44.7%
-      42   │     46.0     │     9.00     │  ⚠   27.3%     │  ⚠   45.5%
-      43   │     47.0     │     8.88     │  ⚠   28.3%     │  ⚠   46.2%
-      44   │     48.0     │     8.75     │  ⚠   29.3%     │  ⚠   47.0%
-      45   │     49.0     │     8.75     │  ⚠   29.3%     │  ⚠   47.0%
-----------------------------------------------------------------------------------------------------
+NOTĂ: Aceste valori indică temperatura exterioară la umbră de la care sistemul VRF
+      nu mai poate asigura capacitatea necesară cu simultaneitate 75%.
 ```
 
 </details>

@@ -11,6 +11,8 @@ import squants.space.*
 import squants.thermal.*
 import squants.thermal.TemperatureConversions.given
 
+import scala.collection.immutable.ListMap
+
 /** Calculator de sarcină termică pentru răcire conform normativelor I5-2022 și SR 6648-2 Acest modul conține logica
   * generică pentru calculul si afișarea raportului pentru sarcinii termice de răcire.
   */
@@ -93,17 +95,15 @@ object CalculatorPeretiExterni extends CalculatorCastigTermic[Seq[PereteExterior
     Componenta(
       nume = s"Perete ${perete.orientare}",
       valoare = putere,
-      parametri = Map(
-        "U"      -> s"${perete.coeficientU} W/(m²·K)",
-        "A"      -> s"${perete.suprafata}",
-        "deltaT" -> s"$deltaT"
+      parametri = ListMap(
+        "dimensiuni"         -> s"${perete.latime} × ${perete.inaltime}",
+        "A (suprafață)"      -> s"${perete.suprafata}",
+        "U (coef. transm.)"  -> s"${perete.coeficientU} W/(m²·K)",
+        "ΔT (dif. temp.)"    -> s"$deltaT"
       )
     )
 
 object CalculatorFerestre extends CalculatorCastigTermic[Seq[Fereastra]]:
-
-  private def formatIrradiance(irradiance: Irradiance): String =
-    f"${irradiance.toWattsPerSquareMeter}%.2f W/m²"
 
   def calculeaza(ferestre: Seq[Fereastra], parametri: ParametriClimatici): CastigTermic =
     val deltaT     = parametri.deltaTemperatura
@@ -128,18 +128,19 @@ object CalculatorFerestre extends CalculatorCastigTermic[Seq[Fereastra]]:
     Componenta(
       nume = s"Fereastră ${fereastra.orientare}",
       valoare = qTrans + qRad,
-      parametri = Map(
-        "U"                -> s"${fereastra.coeficientU} W/(m²·K)",
-        "A"                -> s"${fereastra.suprafata}",
-        "deltaT"           -> s"$deltaT",
-        "q_transmisie"     -> s"$qTrans",
-        "radiatie_totala"  -> formatIrradiance(radiatieTotala),
-        "radiatie_directa" -> formatIrradiance(RadiatieSolara.radiatieDirectaLaOra(fereastra.orientare, oraCritica)),
-        "radiatie_difuza"  -> formatIrradiance(RadiatieSolara.radiatieDifuzaLaOra(oraCritica)),
-        "factor_solar"     -> s"${fereastra.factorSolar}",
-        "factor_umbra"     -> s"${fereastra.factorUmbra}",
-        "q_radiatie"       -> s"$qRad",
-        "ora_critica"      -> s"$oraCritica"
+      parametri = ListMap(
+        "dimensiuni"              -> s"${fereastra.latime} × ${fereastra.inaltime}",
+        "A (suprafață)"           -> s"${fereastra.suprafata}",
+        "U (coef. transm.)"       -> s"${fereastra.coeficientU} W/(m²·K)",
+        "g (factor solar)"        -> s"${fereastra.factorSolar}",
+        "F_umbra (factor umbră)"  -> s"${fereastra.factorUmbra}",
+        "ora critică"             -> s"$oraCritica:00",
+        "I (radiație totală)"     -> s"$radiatieTotala",
+        "I_D (radiație directă)"  -> s"${RadiatieSolara.radiatieDirectaLaOra(fereastra.orientare, oraCritica)}",
+        "I_d (radiație difuză)"   -> s"${RadiatieSolara.radiatieDifuzaLaOra(oraCritica)}",
+        "ΔT (dif. temp.)"         -> s"$deltaT",
+        "Q_trans (transmisie)"    -> s"$qTrans",
+        "Q_rad (radiație)"        -> s"$qRad"
       )
     )
 
@@ -156,12 +157,12 @@ object CalculatorPlafon extends CalculatorCastigTermic[Plafon]:
     val componenta = Componenta(
       nume = if plafon.expus then "Plafon expus" else "Plafon neexpus",
       valoare = q,
-      parametri = Map(
-        "U"               -> s"${plafon.coeficientU} W/(m²·K)",
-        "A"               -> s"${plafon.suprafata}",
-        "deltaT_baza"     -> s"$deltaT",
-        "deltaT_radiatie" -> s"${if plafon.expus then DeltaTRadiatie else 0.celsius}",
-        "deltaT_efectiv"  -> s"$deltaTEfectiv"
+      parametri = ListMap(
+        "A (suprafață)"           -> s"${plafon.suprafata}",
+        "U (coef. transm.)"       -> s"${plafon.coeficientU} W/(m²·K)",
+        "ΔT_bază (dif. temp.)"    -> s"$deltaT",
+        "ΔT_rad (radiație sol.)"  -> s"${if plafon.expus then DeltaTRadiatie else 0.celsius}",
+        "ΔT_ef (efectiv)"         -> s"$deltaTEfectiv"
       )
     )
 
@@ -186,10 +187,10 @@ object CalculatorPersoane extends CalculatorCastigTermic[Ocupanti]:
     val componenta = Componenta(
       nume = "Adulți",
       valoare = qAdultiSensibil + qAdultiLatent,
-      parametri = Map(
-        "numar"    -> s"${ocupanti.numarAdulti}",
-        "sensibil" -> s"$qAdultiSensibil",
-        "latent"   -> s"$qAdultiLatent"
+      parametri = ListMap(
+        "n (număr persoane)"     -> s"${ocupanti.numarAdulti}",
+        "Q_sens (căldură sens.)" -> s"$qAdultiSensibil",
+        "Q_lat (căldură lat.)"   -> s"$qAdultiLatent"
       )
     )
 
@@ -208,9 +209,9 @@ object CalculatorEchipamente extends CalculatorCastigTermic[Echipamente]:
     val componenta = Componenta(
       nume = "Echipamente electrocasnice",
       valoare = putereEfectiva,
-      parametri = Map(
-        "putere_instalata" -> s"${echipamente.putereElectrocasnice}",
-        "factor_utilizare" -> s"${echipamente.factorUtilizare}"
+      parametri = ListMap(
+        "P (putere instalată)"   -> s"${echipamente.putereElectrocasnice}",
+        "f (factor utilizare)"   -> s"${echipamente.factorUtilizare}"
       )
     )
 
@@ -239,13 +240,13 @@ object CalculatorVentilatie extends CalculatorCastigTermic[Volume]:
     val componenta = Componenta(
       nume = "Ventilație/infiltrații",
       valoare = putere,
-      parametri = Map(
-        "volum"                 -> s"$volum",
-        "n_schimburi"           -> s"$nSchimburi h⁻¹",
-        "debit_volumic_ora"     -> s"$debitVolumicOrar",
-        "debit_volumic_secunda" -> s"$debitVolumicSecunda",
-        "debit_masic"           -> s"$debitMasicKgPerS kg/s",
-        "deltaT"                -> s"$deltaT"
+      parametri = ListMap(
+        "V (volum)"              -> s"$volum",
+        "n (schimburi aer)"      -> s"$nSchimburi h⁻¹",
+        "ρ (densitate aer)"      -> s"${DensitateAer.toKilogramsPerCubicMeter} kg/m³",
+        "c_p (căldură spec.)"    -> s"$CalduraSpecificaAer J/(kg·K)",
+        "ṁ (debit masic)"        -> s"${formatNumber(debitMasicKgPerS, 5)} kg/s",
+        "ΔT"                     -> s"$deltaT"
       )
     )
 
@@ -307,6 +308,9 @@ class CalculatorSarcinaTermica(spatiu: Spatiu, parametriClimatici: ParametriClim
 
     s"$introducere\n$raportDetaliat"
 
+  private def formatNumber(value: Double, decimals: Int = 2): String =
+    s"%.${decimals}f".format(value)
+
   private def formatPower(power: Power): String =
     f"${power.toWatts}%.2f W"
 
@@ -336,7 +340,14 @@ class CalculatorSarcinaTermica(spatiu: Spatiu, parametriClimatici: ParametriClim
 
     val castiguriText = rezultat.castiguri
       .map: castig =>
-        val componente = castig.componente.map(c => f"  ${c.nume}: ${formatPower(c.valoare)}").mkString("\n")
+        val componente = castig.componente
+          .map: c =>
+            val parametriText = if c.parametri.nonEmpty then
+              val params = c.parametri.map((k, v) => f"    $k%-25s: $v").mkString("\n")
+              f"\n$params"
+            else ""
+            f"  ${c.nume}: ${formatPower(c.valoare)}$parametriText"
+          .mkString("\n\n")
         f"""$separatorMinus
          |${castig.sursa}
          |Formula: ${castig.formula}
