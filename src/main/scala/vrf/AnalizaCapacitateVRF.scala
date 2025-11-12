@@ -78,7 +78,7 @@ class CalculatorAnalizaVRF(
     val necesarCuSimultaneitate100 = capacitateTotala
     val factorCorectie             = unitateExterna.tabelFactoriCorectieTeviEL.factorLa(lungimeTevariEchivalentaM)
 
-    val randuri = (25 to 45).map { tempUmbra =>
+    val randuri = (31 to 45).map { tempUmbra =>
       val tempLaUmbra         = Celsius(tempUmbra)
       val tempAerAspirat      = tempLaUmbra + unitateExterna.adaosTemperaturaSoare
       val capacitateDinManual = unitateExterna.capacitateDinTabel(tempAerAspirat, tempInterioara)
@@ -165,18 +165,18 @@ class CalculatorAnalizaVRF(
          |$SeparatorMinus""".stripMargin
 
     val tabelHeader = """
-         | Temp. la  │  Temp. aer   │  Capacitate  │    Deficit    │    Deficit
-         |  umbră    │   aspirat    │    reală     │      75%      │     100%
-         |   (°C)    │     (°C)     │     (kW)     │               │
-         |-----------+--------------+--------------+---------------+---------------"""
+         | Temp. la  │  Temp. aer   │  Capacitate  │    Deficit     │    Deficit
+         |  umbră    │   aspirat    │    reală     │ simultaneitate │ simultaneitate
+         |   (°C)    │     (°C)     │     (kW)     │      75%       │      100%
+         |-----------+--------------+--------------+----------------+---------------"""
 
     val randuri = analiza.randuri
       .map { rand =>
-        f"   ${rand.tempLaUmbra}%5d     │    ${rand.tempAerAspirat.toCelsiusScale}%5.1f      │   ${rand.capacitateReala.toKilowatts}%6.2f     │  ${rand.marker75} ${rand.deficit75Procent}%6.1f%%     │  ${rand.marker100} ${rand.deficit100Procent}%6.1f%%"
+        f"   ${rand.tempLaUmbra}%5d   │    ${rand.tempAerAspirat.toCelsiusScale}%5.1f     │   ${rand.capacitateReala.toKilowatts}%6.2f     │  ${rand.marker75} ${rand.deficit75Procent}%6.1f%%     │  ${rand.marker100} ${rand.deficit100Procent}%6.1f%%"
       }
       .mkString("\n")
 
-    s"$header$tabelHeader$randuri\n$SeparatorMinus"
+    s"$header$tabelHeader\n$randuri\n$SeparatorMinus"
 
 object AnalizaCapacitateVRF:
 
