@@ -83,16 +83,3 @@ package object sarcinaTermica:
     ocupanti: Ocupanti,
     echipamente: Echipamente
   )
-
-  case class Componenta(
-    nume: String,
-    valoare: Power,
-    parametri: Map[String, String] = Map.empty
-  )
-
-  case class CastigTermic(
-    sursa: String,
-    formula: String,
-    valoare: Power,
-    componente: Seq[Componenta] = Seq.empty
-  )

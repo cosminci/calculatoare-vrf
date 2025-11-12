@@ -8,10 +8,30 @@ import squants.mass.DensityConversions.given
 import squants.radio.*
 import squants.radio.IrradianceConversions.*
 import squants.space.*
+import common.{Separator, SeparatorMinus}
 import squants.thermal.*
 import squants.thermal.TemperatureConversions.given
 
 import scala.collection.immutable.ListMap
+
+private case class Componenta(
+  nume: String,
+  valoare: Power,
+  parametri: Map[String, String] = Map.empty
+)
+
+private case class CastigTermic(
+  sursa: String,
+  formula: String,
+  valoare: Power,
+  componente: Seq[Componenta] = Seq.empty
+)
+
+private case class RezultatCalcul(castiguri: Seq[CastigTermic]):
+  private val putereRecomandataCoeficient: Double = 1.15
+
+  def totalCastiguri: Power   = castiguri.map(_.valoare).sum
+  def putereRecomadata: Power = totalCastiguri * putereRecomandataCoeficient
 
 /** Calculator de sarcină termică pentru răcire conform normativelor I5-2022 și SR 6648-2 Acest modul conține logica
   * generică pentru calculul si afișarea raportului pentru sarcinii termice de răcire.
@@ -260,12 +280,6 @@ object CalculatorVentilatie extends CalculatorCastigTermic[Volume]:
       componente = Seq(componenta)
     )
 
-case class RezultatCalcul(castiguri: Seq[CastigTermic]):
-  private val putereRecomandataCoeficient: Double = 1.15
-
-  def totalCastiguri: Power   = castiguri.map(_.valoare).sum
-  def putereRecomadata: Power = totalCastiguri * putereRecomandataCoeficient
-
 class CalculatorSarcinaTermica(spatiu: Spatiu, parametriClimatici: ParametriClimatici):
 
   def calculeaza: RezultatCalcul =
@@ -319,17 +333,15 @@ class CalculatorSarcinaTermica(spatiu: Spatiu, parametriClimatici: ParametriClim
 
   private def genereazaRaportFormatat(rezultat: RezultatCalcul): String =
     val volum            = spatiu.suprafataPardoseala * spatiu.inaltime
-    val separator        = "=" * 100
-    val separatorMinus   = "-" * 100
     val putereRecomadata = rezultat.putereRecomadata
 
     val antet = f"""
-       |$separator
+       |$Separator
        |SPAȚIU: ${spatiu.nume}
        |Suprafață: ${spatiu.suprafataPardoseala}
        |Înălțime: ${spatiu.inaltime}
        |Volum: $volum
-       |$separator""".stripMargin
+       |$Separator""".stripMargin
 
     val parametri = f"""
        |
@@ -348,22 +360,22 @@ class CalculatorSarcinaTermica(spatiu: Spatiu, parametriClimatici: ParametriClim
             else ""
             f"  ${c.nume}: ${formatPower(c.valoare)}$parametriText"
           .mkString("\n\n")
-        f"""$separatorMinus
+        f"""$SeparatorMinus
          |${castig.sursa}
          |Formula: ${castig.formula}
-         |$separatorMinus
+         |$SeparatorMinus
          |$componente
          |
          |TOTAL ${castig.sursa}: ${formatPower(castig.valoare)}""".stripMargin
       .mkString("\n")
 
-    val rezumat = f"""$separator
+    val rezumat = f"""$Separator
        |REZUMAT CÂȘTIGURI TERMICE
-       |$separator
+       |$Separator
        |${rezultat.castiguri.map(c => f"${c.sursa}%-50s: ${formatPower(c.valoare)}").mkString("\n")}
-       |$separatorMinus
+       |$SeparatorMinus
        |${"TOTAL CÂȘTIGURI TERMICE"}%-50s: ${formatPower(rezultat.totalCastiguri)}
-       |$separator
+       |$Separator
        |
        |>>> PUTERE NECESARĂ INSTALAȚIE CLIMATIZARE: ${formatPower(rezultat.totalCastiguri)} <<<
        |
