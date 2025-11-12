@@ -227,6 +227,9 @@ object CalculatorVentilatie extends CalculatorCastigTermic[Volume]:
   private val CalduraSpecificaAer   = 1005.0 // J/(kg·K)
   private val NSchimburiAerStandard = 0.3    // h⁻¹
 
+  private def formatNumber(value: Double, decimals: Int = 2): String =
+    s"%.${decimals}f".format(value)
+
   def calculeaza(volum: Volume, parametri: ParametriClimatici): CastigTermic =
     val deltaT     = parametri.deltaTemperatura
     val nSchimburi = NSchimburiAerStandard
@@ -307,9 +310,6 @@ class CalculatorSarcinaTermica(spatiu: Spatiu, parametriClimatici: ParametriClim
     val raportDetaliat = genereazaRaportFormatat(rezultat)
 
     s"$introducere\n$raportDetaliat"
-
-  private def formatNumber(value: Double, decimals: Int = 2): String =
-    s"%.${decimals}f".format(value)
 
   private def formatPower(power: Power): String =
     f"${power.toWatts}%.2f W"

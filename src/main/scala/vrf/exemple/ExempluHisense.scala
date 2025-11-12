@@ -91,11 +91,11 @@ object ExempluHisense:
     */
   val lungimeTeviEchivalenta = 25.0 // Lungime echivalentă totală (include L + coturi + H)
 
-  /** Generează raportul complet pentru configurația Hisense */
   def main(args: Array[String]): Unit =
     val raport = AnalizaCapacitateVRF.genereazaRaportComplet(
       unitateExterna = unitateExternaHisense,
       unitatiInterne = unitatiInterneHisense,
-      lungimeTeviEchivalenta = lungimeTeviEchivalenta
+      lungimeTeviEchivalenta = lungimeTeviEchivalenta,
+      factoriSimultaneitate = List(0.6, 0.7, 0.8, 0.9)
     )
     println(raport)
