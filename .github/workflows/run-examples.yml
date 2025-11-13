@@ -1,0 +1,63 @@
+name: Run Examples On-Demand
+
+on:
+  workflow_dispatch:
+    inputs:
+      example:
+        description: 'Alege exemplul de rulat'
+        required: true
+        type: choice
+        options:
+          - 'Sarcină Termică: OpenSpaceLiving'
+          - 'Sarcină Termică: OpenSpaceLivingBucatarie'
+          - 'Sarcină Termică: OpenSpaceComplet'
+          - 'Analiză VRF: ExempluHisense'
+
+jobs:
+  run-example:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'sbt'
+      
+      - name: Determine command to run
+        id: determine_command
+        run: |
+          # Parse input: "Tip: ClassName" -> package.exemple.ClassName
+          INPUT="${{ inputs.example }}"
+          TIP=$(echo "$INPUT" | cut -d':' -f1 | xargs)
+          CLASS_NAME=$(echo "$INPUT" | cut -d':' -f2 | xargs)
+          
+          # Map tip to package name (one-liner)
+          PACKAGE=$( [[ "$TIP" == "Sarcină Termică" ]] && echo "sarcinaTermica" || echo "vrf" )
+          
+          # Construct full command
+          COMMAND="${PACKAGE}.exemple.${CLASS_NAME}"
+          
+          echo "command=$COMMAND" >> $GITHUB_OUTPUT
+          echo "example_name=$CLASS_NAME" >> $GITHUB_OUTPUT
+          echo "Parsed: Tip='$TIP', Class='$CLASS_NAME', Package='$PACKAGE', Command='$COMMAND'"
+      
+      - name: Run example
+        run: |
+          echo ">>> Running: sbt \"runMain ${{ steps.determine_command.outputs.command }}\""
+          echo "================================"
+          sbt "runMain ${{ steps.determine_command.outputs.command }}"
+      
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: example-output-${{ steps.determine_command.outputs.example_name }}-${{ github.run_number }}
+          path: |
+            *.log
+            output/
+          retention-days: 7
