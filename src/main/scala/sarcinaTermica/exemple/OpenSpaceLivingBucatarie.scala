@@ -19,7 +19,7 @@ object OpenSpaceLivingBucatarie:
 
   // Caracteristici ferestre - Saint Gobain COOL-LITE® KN 166 II
   private val CoeficientUFerestre: ConductantaTermica = 1.0  // W/(m²·K)
-  private val FactorSolarFerestre                     = 0.39 // g
+  private val FactorSolarFerestre                     = 0.37 // g
 
   private val CoeficientUPereti: ConductantaTermica = 0.35 // W/(m²·K) - perete izolat conform normativ
   private val CoeficientUPlafon: ConductantaTermica = 2.5  // W/(m²·K) - plafon neizolat, expus la soare
@@ -48,16 +48,7 @@ object OpenSpaceLivingBucatarie:
     )
 
     def fereastraSV2: Fereastra = Fereastra(
-      latime = 3.20.meters,
-      inaltime = InaltimeLiving,
-      orientare = Orientare.SV,
-      coeficientU = CoeficientUFerestre,
-      factorSolar = FactorSolarFerestre,
-      factorUmbra = 1.0 // fără umbră
-    )
-
-    def fereastraBucatarie: Fereastra = Fereastra(
-      latime = 2.0.meters,
+      latime = 5.20.meters,
       inaltime = InaltimeLiving,
       orientare = Orientare.SV,
       coeficientU = CoeficientUFerestre,
@@ -96,8 +87,7 @@ object OpenSpaceLivingBucatarie:
       ferestre = List(
         Ferestre.fereastraSE,
         Ferestre.fereastraSV1,
-        Ferestre.fereastraSV2,
-        Ferestre.fereastraBucatarie
+        Ferestre.fereastraSV2
       ),
       peretiExterni = peretiExterni,
       plafon = plafon,
