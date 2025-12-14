@@ -19,10 +19,10 @@ object OpenSpaceLivingBucatarie:
 
   // Caracteristici ferestre - Saint Gobain COOL-LITE® KN 166 II
   private val CoeficientUFerestre: ConductantaTermica = 1.0  // W/(m²·K)
-  private val FactorSolarFerestre                     = 0.37 // g
+  private val FactorSolarFerestre                     = 0.39 // g (conform SR 6648-2)
 
   private val CoeficientUPereti: ConductantaTermica = 0.35 // W/(m²·K) - perete izolat conform normativ
-  private val CoeficientUPlafon: ConductantaTermica = 2.5  // W/(m²·K) - plafon neizolat, expus la soare
+  private val CoeficientUPlafon: ConductantaTermica = 0.3  // W/(m²·K) - plafon neizolat, expus la soare
 
   private val InaltimeLiving    = 3.3.meters
   private val InaltimeBucatarie = 2.8.meters

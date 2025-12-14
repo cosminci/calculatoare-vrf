@@ -36,6 +36,16 @@ private case class RezultatCalcul(castiguri: Seq[CastigTermic]):
 /** Calculator de sarcină termică pentru răcire conform normativelor I5-2022 și SR 6648-2 Acest modul conține logica
   * generică pentru calculul si afișarea raportului pentru sarcinii termice de răcire.
   */
+
+/** Date de radiație solară conform normativului I5-2022
+  *
+  * Referință normativ I5-2022:
+  *   - Anexa 3: "Valorile intensității radiației solare directe ID și difuze Id [W/m²]
+  *              pentru ziua tip a lunii iulie, la latitudinea nordică de 45°"
+  *   - Tabelele conțin valorile radiației solare directe (ID) și difuze (Id) pentru fiecare oră (6-18)
+  *     și pentru fiecare orientare (N, NE, E, SE, S, SV, V, NV)
+  *   - Radiația totală = Radiație directă (ID) + Radiație difuză (Id)
+  */
 object RadiatieSolara:
 
   // Alias scurt pentru sintaxa implicită - face tabelele mai compacte și lizibile
@@ -98,6 +108,12 @@ object RadiatieSolara:
 trait CalculatorCastigTermic[A]:
   def calculeaza(input: A, parametriClimatici: ParametriClimatici): CastigTermic
 
+/** Calculator pentru câștiguri termice prin pereți externi
+  *
+  * Referință normativ I5-2022:
+  *   - Secțiunea 4.2: "Sarcina termică de încălzire/răcire a clădirilor climatizate"
+  *   - Formula: Q = U × A × ΔT (transmisie termică prin elemente opace ale anvelopei)
+  */
 object CalculatorPeretiExterni extends CalculatorCastigTermic[Seq[PereteExterior]]:
 
   def calculeaza(pereti: Seq[PereteExterior], parametri: ParametriClimatici): CastigTermic =
@@ -123,6 +139,16 @@ object CalculatorPeretiExterni extends CalculatorCastigTermic[Seq[PereteExterior
       )
     )
 
+/** Calculator pentru câștiguri termice prin ferestre (transmisie + radiație solară)
+  *
+  * Referință normativ I5-2022:
+  *   - Secțiunea 4.2: "Sarcina termică de încălzire/răcire a clădirilor climatizate"
+  *   - Anexa 3: "Valorile intensității radiației solare directe ID și difuze Id [W/m²]
+  *              pentru ziua tip a lunii iulie, la latitudinea nordică de 45°"
+  *   - Formula: Q = Q_transmisie + Q_radiatie
+  *            = Σ(U × A × ΔT) + Σ(A × I × g × F_umbra)
+  *   - Metoda orei critice: se determină ora la care radiația totală prin toate ferestrele este maximă
+  */
 object CalculatorFerestre extends CalculatorCastigTermic[Seq[Fereastra]]:
 
   def calculeaza(ferestre: Seq[Fereastra], parametri: ParametriClimatici): CastigTermic =
@@ -164,6 +190,14 @@ object CalculatorFerestre extends CalculatorCastigTermic[Seq[Fereastra]]:
       )
     )
 
+/** Calculator pentru câștiguri termice prin plafon
+  *
+  * Referință normativ I5-2022:
+  *   - Secțiunea 4.2: "Sarcina termică de încălzire/răcire a clădirilor climatizate"
+  *   - Formula: Q = U × A × ΔT_echivalent
+  *   - Pentru plafon expus la radiație solară: ΔT_echivalent = ΔT + ΔT_radiație
+  *   - ΔT_radiație = 12°C (supraîncălzire datorată radiației solare pentru plafon expus)
+  */
 object CalculatorPlafon extends CalculatorCastigTermic[Plafon]:
 
   private val DeltaTRadiatie = 12.celsius // Supraîncălzirea plafonului prin radiație solară
@@ -193,6 +227,16 @@ object CalculatorPlafon extends CalculatorCastigTermic[Plafon]:
       componente = Seq(componenta)
     )
 
+/** Calculator pentru câștiguri termice de la persoane
+  *
+  * Referință normativ I5-2022:
+  *   - Anexa 5: "Degajarea de căldură a unei persoane (pentru o temperatură a aerului
+  *              din încăperi de 24°C și pentru o suprafață medie a corpului uman de 1,8 m²)"
+  *   - Pentru activitate sedentară (1,2 met = 125 W/persoană):
+  *     * Căldură sensibilă: 75 W/persoană
+  *     * Căldură latentă: 50 W/persoană
+  *   - Formula: Q = n_adulti × q_adult + n_copii × q_copil
+  */
 object CalculatorPersoane extends CalculatorCastigTermic[Ocupanti]:
 
   private val CastigAdultSensibil = 75.watts
@@ -221,6 +265,14 @@ object CalculatorPersoane extends CalculatorCastigTermic[Ocupanti]:
       componente = Seq(componenta)
     )
 
+/** Calculator pentru câștiguri termice de la echipamente electrocasnice
+  *
+  * Referință normativ I5-2022:
+  *   - Secțiunea 4.2: "Sarcina termică de încălzire/răcire a clădirilor climatizate"
+  *   - Câștigurile de la echipamente se calculează pe baza puterii instalate și a factorului de utilizare
+  *   - Formula: Q = P_electrocasnice × f_utilizare
+  *   - Nota: Anexa 6 oferă valori pentru iluminat; echipamentele se calculează similar
+  */
 object CalculatorEchipamente extends CalculatorCastigTermic[Echipamente]:
 
   def calculeaza(echipamente: Echipamente, parametri: ParametriClimatici): CastigTermic =
@@ -242,6 +294,18 @@ object CalculatorEchipamente extends CalculatorCastigTermic[Echipamente]:
       componente = Seq(componenta)
     )
 
+/** Calculator pentru câștiguri termice prin ventilație/infiltrații
+  *
+  * Referință normativ I5-2022:
+  *   - Secțiunea 4.3: "Debitele de aer în spațiile ventilate și climatizate"
+  *   - Anexa 7: "Valorile recomandate ale numărului de schimburi orare de aer N"
+  *   - Formula: Q = ṁ × c_p × ΔT = (ρ × V × n / 3600) × c_p × ΔT
+  *   unde:
+  *     * ρ = 1.2 kg/m³ (densitatea aerului)
+  *     * c_p = 1005 J/(kg·K) (căldura specifică a aerului)
+  *     * n = 0.3 h⁻¹ (număr de schimburi de aer pentru infiltrații)
+  *     * V = volumul încăperii [m³]
+  */
 object CalculatorVentilatie extends CalculatorCastigTermic[Volume]:
   private val DensitateAer          = 1.2.kilogramsPerCubicMeter
   private val CalduraSpecificaAer   = 1005.0 // J/(kg·K)
